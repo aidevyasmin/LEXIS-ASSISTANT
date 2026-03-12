@@ -1,0 +1,293 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  LAWYER
+  STAFF
+  CLIENT
+}
+
+enum CaseType {
+  CIVIL
+  CRIMINAL
+  FAMILY
+  PROPERTY
+  OTHER
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PaymentMethod {
+  EASYPAISA
+  JAZZCASH
+  BANK_TRANSFER
+  STRIPE
+  CASH
+}
+
+enum CaseStatus {
+  OPEN
+  IN_PROGRESS
+  WON
+  LOST
+  SETTLED
+  CLOSED
+}
+
+enum HearingStatus {
+  SCHEDULED
+  ADJOURNED
+  COMPLETED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model ConsultationRequest {
+  id              String   @id @default(uuid()) @db.Uuid
+  name            String
+  phone           String
+  caseType        String
+  method          String
+  message         String   @db.Text
+  status          String   @default("PENDING") // PENDING, CONTACTED, BOOKED, ARCHIVED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Note {
+  id              String   @id @default(uuid()) @db.Uuid
+  title           String
+  content         String   @db.Text
+  judgeRemarks    String?  @db.Text
+  nextHearingDate DateTime?
+  
+  caseId      String?  @db.Uuid
+  case        Case?    @relation(fields: [caseId], references: [id])
+  
+  clientId    String?  @db.Uuid
+  client      Client?  @relation(fields: [clientId], references: [id])
+  
+  authorId    String   @db.Uuid
+  author      User     @relation("UserNotes", fields: [authorId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id                String    @id @default(uuid()) @db.Uuid
+  fullName          String
+  email             String    @unique
+  passwordHash      String
+  role              Role      @default(CLIENT)
+  googleAccessToken String?
+  googleRefreshToken String?
+  googleTokenExpiry DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  clientProfile Client?
+  documents     LegalDocument[] @relation("UploadedBy")
+  casesManaged  Case[]     @relation("LawyerCases")
+  notes         Note[]     @relation("UserNotes")
+}
+
+model Client {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String?  @unique @db.Uuid // Optional link to registered user
+  user            User?    @relation(fields: [userId], references: [id])
+  
+  fullName        String
+  phone           String
+  email           String?
+  cnic            String?  
+  address         String?  
+  caseType        CaseType
+  caseDescription String?
+  status          String   @default("NEW") // NEW, ACTIVE, CLOSED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  appointments    Appointment[]
+  documents       LegalDocument[]
+  payments        Payment[]
+  cases           Case[]
+  invoices        Invoice[]
+  notes           Note[]
+}
+
+model Case {
+  id              String     @id @default(uuid()) @db.Uuid
+  caseNumber      String     @unique
+  title           String
+  description     String?
+  type            CaseType
+  status          CaseStatus @default(OPEN)
+  courtName       String?
+  judgeName       String?
+  opposingParty   String?
+  opposingLawyer  String?
+  
+  clientId        String     @db.Uuid
+  client          Client     @relation(fields: [clientId], references: [id])
+  
+  lawyerId        String     @db.Uuid
+  lawyer          User       @relation("LawyerCases", fields: [lawyerId], references: [id])
+  
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Relations
+  hearings        HearingDate[]
+  documents       LegalDocument[]
+  invoices        Invoice[]
+  payments        Payment[]
+  notes           Note[]
+  reminders       Reminder[]
+}
+
+model HearingDate {
+  id              String        @id @default(uuid()) @db.Uuid
+  caseId          String        @db.Uuid
+  case            Case          @relation(fields: [caseId], references: [id])
+  
+  hearingDate     DateTime
+  purpose         String?
+  status          HearingStatus @default(SCHEDULED)
+  courtOrder      String?
+  nextHearingDate DateTime?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Reminder {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  date        DateTime
+  isCompleted Boolean  @default(false)
+  
+  caseId      String?  @db.Uuid
+  case        Case?    @relation(fields: [caseId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Invoice {
+  id              String        @id @default(uuid()) @db.Uuid
+  invoiceNumber   String        @unique
+  amount          Decimal       @db.Decimal(10, 2)
+  description     String?
+  status          InvoiceStatus @default(DRAFT)
+  dueDate         DateTime
+  paidAt          DateTime?
+  
+  clientId        String        @db.Uuid
+  client          Client        @relation(fields: [clientId], references: [id])
+  
+  caseId          String?       @db.Uuid
+  case            Case?         @relation(fields: [caseId], references: [id])
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  payments        Payment[]
+}
+
+model Appointment {
+  id          String            @id @default(uuid()) @db.Uuid
+  clientId    String            @db.Uuid
+  client      Client            @relation(fields: [clientId], references: [id])
+  
+  slotStart   DateTime
+  slotEnd     DateTime
+  status      AppointmentStatus @default(PENDING)
+  notes       String?
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Relations
+  payment     Payment?
+}
+
+model Payment {
+  id            String        @id @default(uuid()) @db.Uuid
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("PKR")
+  method        PaymentMethod
+  proofUrl      String?       // Path to screenshot/receipt
+  transactionId String?       // External transaction ID
+  status        PaymentStatus @default(PENDING)
+  verifiedBy    String?       // Admin/Lawyer ID who verified
+  verifiedAt    DateTime?
+  
+  clientId      String        @db.Uuid
+  client        Client        @relation(fields: [clientId], references: [id])
+  
+  appointmentId String?       @unique @db.Uuid
+  appointment   Appointment?  @relation(fields: [appointmentId], references: [id])
+
+  caseId        String?       @db.Uuid
+  case          Case?         @relation(fields: [caseId], references: [id])
+
+  invoiceId     String?       @db.Uuid
+  invoice       Invoice?      @relation(fields: [invoiceId], references: [id])
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model LegalDocument {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  url         String
+  type        String   // PDF, IMAGE, DOCX
+  size        Int      // In bytes
+  
+  clientId    String?  @db.Uuid
+  client      Client?  @relation(fields: [clientId], references: [id])
+  
+  caseId      String?  @db.Uuid
+  case        Case?    @relation(fields: [caseId], references: [id])
+
+  uploadedById String  @db.Uuid
+  uploadedBy   User    @relation("UploadedBy", fields: [uploadedById], references: [id])
+
+  createdAt   DateTime @default(now())
+}
