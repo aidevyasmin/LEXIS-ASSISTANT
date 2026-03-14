@@ -43,7 +43,7 @@
 
 ## Prompt Text
 Create a modern, elegant, and professional mobile app for a lawyer.
-Advocate Name: Nisar Hussain Bhatti
+Advocate fullName: Nisar Hussain Bhatti
 Profession: Advocate / Legal Consultant
 Experience: 7+ Years of Professional Legal Practice
 ... [detailed requirements for 7 pages and colors] ...

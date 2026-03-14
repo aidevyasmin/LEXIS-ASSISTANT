@@ -11,11 +11,11 @@ const LegalAssistant = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
 
   const templates = [
-    { id: 'affidavit', name: 'Affidavit', fields: ['Deponent Name', 'Father/Husband Name', 'Address', 'Purpose'] },
-    { id: 'notice', name: 'Legal Notice', fields: ['Sender Name', 'Recipient Name', 'Matter', 'Demands'] },
-    { id: 'power', name: 'Power of Attorney', fields: ['Principal Name', 'Attorney Name', 'Powers Granted'] },
-    { id: 'agreement', name: 'Agreement Draft', fields: ['Party A', 'Party B', 'Subject', 'Terms'] },
-    { id: 'application', name: 'Court Application', fields: ['Court Name', 'Case Title', 'Relief Sought'] },
+    { id: 'affidavit', fullName: 'Affidavit', fields: ['Deponent Name', 'Father/Husband Name', 'Address', 'Purpose'] },
+    { id: 'notice', fullName: 'Legal Notice', fields: ['Sender Name', 'Recipient Name', 'Matter', 'Demands'] },
+    { id: 'power', fullName: 'Power of Attorney', fields: ['Principal Name', 'Attorney Name', 'Powers Granted'] },
+    { id: 'agreement', fullName: 'Agreement Draft', fields: ['Party A', 'Party B', 'Subject', 'Terms'] },
+    { id: 'application', fullName: 'Court Application', fields: ['Court Name', 'Case Title', 'Relief Sought'] },
   ];
 
   const handleGenerate = async () => {

@@ -10,11 +10,11 @@ const DocumentGenerator = () => {
   const [loading, setLoading] = useState(false);
 
   const templates = [
-    { id: 'affidavit', name: 'Affidavit', fields: 'Deponent Name, Father/Husband Name, Address, Statement of Facts' },
-    { id: 'notice', name: 'Legal Notice', fields: 'Sender Name, Recipient Name, Matter of Dispute, Demands' },
-    { id: 'power', name: 'Power of Attorney', fields: 'Principal Name, Attorney Name, Specific Powers, Property Details' },
-    { id: 'agreement', name: 'Agreement Draft', fields: 'First Party, Second Party, Subject Matter, Terms and Conditions' },
-    { id: 'application', name: 'Court Application', fields: 'Court Name, Case Title, Specific Relief or Prayer' },
+    { id: 'affidavit', fullName: 'Affidavit', fields: 'Deponent Name, Father/Husband Name, Address, Statement of Facts' },
+    { id: 'notice', fullName: 'Legal Notice', fields: 'Sender Name, Recipient Name, Matter of Dispute, Demands' },
+    { id: 'power', fullName: 'Power of Attorney', fields: 'Principal Name, Attorney Name, Specific Powers, Property Details' },
+    { id: 'agreement', fullName: 'Agreement Draft', fields: 'First Party, Second Party, Subject Matter, Terms and Conditions' },
+    { id: 'application', fullName: 'Court Application', fields: 'Court Name, Case Title, Specific Relief or Prayer' },
   ];
 
   const handleGenerate = async () => {

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: lexis_postgres
+    container_fullName: lexis_postgres
     restart: always
     environment:
       POSTGRES_USER: lexis_user

@@ -144,7 +144,7 @@ exports.getAllPayments = async (req, res) => {
       include: {
         client: {
           select: {
-            fullName: true,
+            fullfullName: true,
             email: true,
             phone: true,
           },
@@ -173,7 +173,7 @@ exports.getPaymentById = async (req, res) => {
       include: {
         client: {
           select: {
-            fullName: true,
+            fullfullName: true,
             email: true,
             phone: true,
           },

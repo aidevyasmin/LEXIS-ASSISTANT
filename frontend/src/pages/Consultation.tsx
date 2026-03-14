@@ -4,7 +4,7 @@ import { consultations } from '../services/api';
 
 const Consultation = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     phone: '',
     caseType: 'Civil Case',
     message: '',
@@ -77,7 +77,7 @@ const Consultation = () => {
                   className="w-full p-3 bg-slate-50 border border-slate-200 focus:border-legal-gold outline-none transition-all"
                   placeholder="John Doe"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                 />
               </div>
               <div className="space-y-2">

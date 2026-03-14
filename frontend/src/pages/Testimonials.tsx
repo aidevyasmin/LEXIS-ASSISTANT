@@ -3,25 +3,25 @@ import { Star, Quote } from 'lucide-react';
 const Testimonials = () => {
   const reviews = [
     {
-      name: "Muhammad Ali",
+      fullName: "Muhammad Ali",
       role: "Business Owner",
       content: "Advocate Nisar Hussain provided exceptional legal advice regarding my property dispute. His expertise and dedication were evident from the first meeting.",
       rating: 5
     },
     {
-      name: "Sajid Mahmood",
+      fullName: "Sajid Mahmood",
       role: "Client",
       content: "I am extremely grateful for the professional handling of my family case. The results exceeded my expectations, and the process was handled with great sensitivity.",
       rating: 5
     },
     {
-      name: "Zainab Bibi",
+      fullName: "Zainab Bibi",
       role: "Individual Client",
       content: "Very professional and trustworthy. Highly recommended for any civil litigation matters. He explains everything clearly and honestly.",
       rating: 5
     },
     {
-      name: "Kamran Khan",
+      fullName: "Kamran Khan",
       role: "Corporate Client",
       content: "Nisar Hussain's legal consultancy has been invaluable for our company's compliance and contract matters. A true professional in every sense.",
       rating: 5

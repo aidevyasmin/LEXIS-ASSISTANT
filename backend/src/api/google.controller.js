@@ -103,7 +103,7 @@ exports.createCalendarEvent = async (req, res) => {
         dateTime: endDateTime,
         timeZone: 'Asia/Karachi',
       },
-      attendees: [{ email: clientEmail, displayName: clientName }],
+      attendees: [{ email: clientEmail, displayfullName: clientName }],
       reminders: {
         useDefault: false,
         overrides: [

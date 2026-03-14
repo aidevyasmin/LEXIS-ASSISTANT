@@ -20,7 +20,7 @@ module.exports = {
     },
     migrations: {
       directory: './src/models/migrations',
-      tableName: 'knex_migrations'
+      tablefullName: 'knex_migrations'
     }
   },
 
@@ -36,7 +36,7 @@ module.exports = {
     },
     migrations: {
       directory: './src/models/migrations',
-      tableName: 'knex_migrations'
+      tablefullName: 'knex_migrations'
     }
   }
 

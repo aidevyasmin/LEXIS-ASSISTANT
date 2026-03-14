@@ -17,7 +17,7 @@ exports.uploadDocument = async (req, res) => {
 
     const document = await prisma.legalDocument.create({
       data: {
-        name: name || req.file.originalname,
+        fullName: name || req.file.originalname,
         url: fileUrl,
         type: path.extname(req.file.originalname).substring(1).toUpperCase(),
         size: req.file.size,

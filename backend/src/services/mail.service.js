@@ -11,7 +11,7 @@ class MailService {
     console.log("Subject: New Consultation Request Received");
     console.log("To: nisarpulc1234@gmail.com");
     console.log("------------------------------------------");
-    console.log(`Name: ${requestData.name}`);
+    console.log(`fullName: ${requestData.name}`);
     console.log(`Phone: ${requestData.phone}`);
     console.log(`Case Type: ${requestData.caseType}`);
     console.log(`Method: ${requestData.method}`);

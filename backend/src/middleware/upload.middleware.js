@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
     // Specify the directory where files will be stored
     cb(null, uploadDir);
   },
-  filename: (req, file, cb) => {
+  filefullName: (req, file, cb) => {
     // Generate a unique filename using UUID and preserve the original extension
     const uniqueSuffix = uuidv4();
     cb(null, uniqueSuffix + path.extname(file.originalname));

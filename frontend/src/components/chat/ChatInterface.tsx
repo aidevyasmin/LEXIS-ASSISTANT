@@ -23,7 +23,7 @@ const ChatInterface = () => {
   const [inputText, setInputText] = useState('');
   const [step, setStep] = useState(0); 
   const [formData, setFormData] = useState({
-    fullName: '',
+    fullfullName: '',
     phone: '',
     caseType: '',
     caseDescription: '',
@@ -105,7 +105,7 @@ const ChatInterface = () => {
   const processInput = async (text: string) => {
     switch (step) {
       case 0:
-        setFormData(prev => ({ ...prev, fullName: text }));
+        setFormData(prev => ({ ...prev, fullfullName: text }));
         addMessage(`It is a pleasure, ${text}. May I have your phone number to proceed?`, 'bot', 'input');
         setStep(1);
         break;

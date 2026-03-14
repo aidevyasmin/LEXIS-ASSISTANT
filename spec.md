@@ -6,7 +6,7 @@ Transform the existing "Lexis Assistant" into a professional law firm management
 **Core Mission:** Enhance the platform with high-utility professional features for both the advocate and his clients, while maintaining the finalized UI design.
 
 ## 2. Advocate Identity
-- **Name:** Nisar Hussain Bhatti – Advocate
+- **fullName:** Nisar Hussain Bhatti – Advocate
 - **Experience:** 9+ Years of Legal Practice
 - **Office Address:** Office No. 53/54 Hajvery Complex Lahore
 - **Contact:** 0321 4755492 (WhatsApp Enabled)

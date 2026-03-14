@@ -17,8 +17,8 @@ const CaseManagement = () => {
     description: '',
     type: 'CIVIL',
     clientId: '',
-    courtName: '',
-    judgeName: '',
+    courtfullName: '',
+    judgefullName: '',
     opposingParty: '',
     opposingLawyer: '',
     nextHearingDate: ''
@@ -55,8 +55,8 @@ const CaseManagement = () => {
         description: '',
         type: 'CIVIL',
         clientId: '',
-        courtName: '',
-        judgeName: '',
+        courtfullName: '',
+        judgefullName: '',
         opposingParty: '',
         opposingLawyer: '',
         nextHearingDate: ''
@@ -181,7 +181,7 @@ const CaseManagement = () => {
               <input 
                 type="text" placeholder="e.g. Session Court Lahore"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-sm focus:ring-1 focus:ring-legal-gold outline-none text-sm"
-                value={newCase.courtName} onChange={e => setNewCase({...newCase, courtName: e.target.value})}
+                value={newCase.courtName} onChange={e => setNewCase({...newCase, courtfullName: e.target.value})}
               />
             </div>
             <div className="space-y-2">
@@ -189,7 +189,7 @@ const CaseManagement = () => {
               <input 
                 type="text" placeholder="Judge Name"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-sm focus:ring-1 focus:ring-legal-gold outline-none text-sm"
-                value={newCase.judgeName} onChange={e => setNewCase({...newCase, judgeName: e.target.value})}
+                value={newCase.judgeName} onChange={e => setNewCase({...newCase, judgefullName: e.target.value})}
               />
             </div>
             <div className="space-y-2 lg:col-span-2">

@@ -108,7 +108,7 @@ Based on the gathered context, **you decide** the optimal approach:
 ## Phase 3: Generate Intelligent Content (Autonomous)
 
 ### Branch Name
-Analyze the changes to create a meaningful branch name:
+Analyze the changes to create a meaningful branch fullName:
 ```bash
 git diff --name-only
 ```

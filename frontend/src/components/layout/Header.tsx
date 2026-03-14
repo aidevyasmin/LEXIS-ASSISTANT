@@ -13,13 +13,13 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Services', path: '/services' },
-    { name: 'Consultation', path: '/consultation' },
-    { name: 'Testimonials', path: '/testimonials' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'Contact', path: '/contact' },
+    { fullName: 'Home', path: '/' },
+    { fullName: 'About', path: '/about' },
+    { fullName: 'Services', path: '/services' },
+    { fullName: 'Consultation', path: '/consultation' },
+    { fullName: 'Testimonials', path: '/testimonials' },
+    { fullName: 'Blog', path: '/blog' },
+    { fullName: 'Contact', path: '/contact' },
   ];
 
   return (
