@@ -191,4 +191,4 @@ License
 
 This project is developed for educational and professional legal technology demonstration purposes.                                          
 .
-update
+update deploy
