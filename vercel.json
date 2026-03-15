@@ -17,3 +17,8 @@
     }
   ]
 }
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/frontend/dist/$1" }
+  ]
+}
