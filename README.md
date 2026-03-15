@@ -192,3 +192,6 @@ License
 This project is developed for educational and professional legal technology demonstration purposes.                                          
 .
 update deploy
+# Lexis Assistant
+
+🚀 **Live Demo:** [https://lexis-assistant.vercel.app](https://lexis-assistant.vercel.app)
