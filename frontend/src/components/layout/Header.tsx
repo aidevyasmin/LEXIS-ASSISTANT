@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Gavel, User, LogOut, Menu, X } from 'lucide-react';
+import { Gavel, LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 const Header = () => {
@@ -20,6 +20,11 @@ const Header = () => {
     { fullName: 'Testimonials', path: '/testimonials' },
     { fullName: 'Blog', path: '/blog' },
     { fullName: 'Contact', path: '/contact' },
+    { fullName: 'Dashboard', path: '/dashboard' },
+    { fullName: 'Cases', path: '/cases' },
+    { fullName: 'Notepad', path: '/notes' },
+    { fullName: 'Lexis AI', path: '/ai-assistant' },
+    { fullName: 'Library', path: '/library' },
   ];
 
   return (
@@ -34,24 +39,17 @@ const Header = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center space-x-6 text-[10px] font-bold uppercase tracking-widest">
+        <nav className="hidden lg:flex items-center space-x-4 text-[10px] font-bold uppercase tracking-widest">
           {navLinks.map((link) => (
-            <Link key={link.name} to={link.path} className="hover:text-legal-gold transition-colors">
-              {link.name}
+            <Link key={link.fullName} to={link.path} className="hover:text-legal-gold transition-colors">
+              {link.fullName}
             </Link>
           ))}
           
           {token ? (
-            <div className="flex items-center space-x-4 border-l border-slate-700 ml-4 pl-4 text-[10px] font-bold">
-              <Link to="/dashboard" className="hover:text-legal-gold transition-colors">Dashboard</Link>
-              <Link to="/cases" className="hover:text-legal-gold transition-colors">Cases</Link>
-              <Link to="/notes" className="hover:text-legal-gold transition-colors">Notepad</Link>
-              <Link to="/ai-assistant" className="hover:text-legal-gold transition-colors">Lexis AI</Link>
-              <Link to="/library" className="hover:text-legal-gold transition-colors">Library</Link>
-              <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors ml-2">
-                <LogOut className="w-5 h-5" />
-              </button>
-            </div>
+            <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors ml-4">
+              <LogOut className="w-5 h-5" />
+            </button>
           ) : (
             <Link to="/login" className="bg-legal-gold hover:bg-white text-black px-6 py-2 rounded-sm transition-all text-[10px] uppercase tracking-[0.2em] font-bold ml-4 shadow-lg">
               Login
@@ -70,31 +68,16 @@ const Header = () => {
         <div className="lg:hidden bg-slate-800 absolute top-full left-0 w-full border-t border-slate-700 shadow-2xl animate-in slide-in-from-top duration-300">
           <nav className="flex flex-col p-4 space-y-4 text-sm font-medium uppercase tracking-wider">
             {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                to={link.path} 
-                className="hover:text-legal-gold transition-colors py-2 border-b border-slate-700/50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.name}
+              <Link key={link.fullName} to={link.path} className="hover:text-legal-gold transition-colors py-2 border-b border-slate-700/50" onClick={() => setIsMenuOpen(false)}>
+                {link.fullName}
               </Link>
             ))}
             {token ? (
-              <>
-                <Link to="/dashboard" className="hover:text-legal-gold transition-colors py-2 border-b border-slate-700/50" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                <Link to="/cases" className="hover:text-legal-gold transition-colors py-2 border-b border-slate-700/50" onClick={() => setIsMenuOpen(false)}>Cases</Link>
-                <Link to="/notes" className="hover:text-legal-gold transition-colors py-2 border-b border-slate-700/50" onClick={() => setIsMenuOpen(false)}>Notepad</Link>
-                <Link to="/ai-assistant" className="hover:text-legal-gold transition-colors py-2 border-b border-slate-700/50" onClick={() => setIsMenuOpen(false)}>Lexis AI</Link>
-                <Link to="/library" className="hover:text-legal-gold transition-colors py-2 border-b border-slate-700/50" onClick={() => setIsMenuOpen(false)}>Library</Link>
-                <button onClick={handleLogout} className="text-red-400 flex items-center space-x-2 py-4">
-                  <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
-                </button>
-              </>
+              <button onClick={handleLogout} className="text-red-400 flex items-center space-x-2 py-4">
+                <LogOut className="w-5 h-5" /> <span>Logout</span>
+              </button>
             ) : (
-              <Link to="/login" className="bg-legal-gold text-black text-center py-3 rounded-sm font-bold mt-2" onClick={() => setIsMenuOpen(false)}>
-                Login
-              </Link>
+              <Link to="/login" className="bg-legal-gold text-black text-center py-3 rounded-sm font-bold mt-2" onClick={() => setIsMenuOpen(false)}>Login</Link>
             )}
           </nav>
         </div>
@@ -104,3 +87,8 @@ const Header = () => {
 };
 
 export default Header;
+{/* Header ke Desktop Nav mein, navLinks ke loop ke baad, ye add karein: */}
+<div className="flex items-center space-x-4 border-l border-slate-700 ml-4 pl-4">
+  <a href="tel:03214755492" className="hover:text-legal-gold transition-colors">Call Now</a>
+  <a href="mailto:nisarpulc1234@gmail.com" className="hover:text-legal-gold transition-colors">Email</a>
+</div>
