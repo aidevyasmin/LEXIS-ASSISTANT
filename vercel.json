@@ -1,13 +1,19 @@
 {
   "version": 2,
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "backend/src/app.js"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "backend/src/app.js",
+      "use": "@vercel/node"
     }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "backend/src/app.js" },
+    { "handle": "filesystem" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
