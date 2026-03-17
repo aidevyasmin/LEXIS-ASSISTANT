@@ -82,7 +82,7 @@ function Get-HighestNumberFromBranches {
         $branches = git branch -a 2>$null
         if ($LASTEXITCODE -eq 0) {
             foreach ($branch in $branches) {
-                # Clean branch fullName: remove leading markers and remote prefixes
+                # Clean branch name: remove leading markers and remote prefixes
                 $cleanBranch = $branch.Trim() -replace '^\*?\s+', '' -replace '^remotes/[^/]+/', ''
                 
                 # Extract feature number if branch matches pattern ###-*
@@ -279,7 +279,7 @@ if ($Json) {
     }
     $obj | ConvertTo-Json -Compress
 } else {
-    Write-Output "BRANCH_fullName: $branchName"
+    Write-Output "BRANCH_NAME: $branchName"
     Write-Output "SPEC_FILE: $specFile"
     Write-Output "FEATURE_NUM: $featureNum"
     Write-Output "HAS_GIT: $hasGit"

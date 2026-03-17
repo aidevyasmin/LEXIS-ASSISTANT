@@ -91,7 +91,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 5. **Generate checklist** - Create "Unit Tests for Requirements":
    - Create `FEATURE_DIR/checklists/` directory if it doesn't exist
-   - Generate unique checklist filefullName:
+   - Generate unique checklist filename:
      - Use short, descriptive name based on domain (e.g., `ux.md`, `api.md`, `security.md`)
      - Format: `[domain].md`
      - If file exists, append to existing file

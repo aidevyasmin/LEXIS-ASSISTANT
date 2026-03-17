@@ -65,7 +65,7 @@ exports.login = async (req, res) => {
       token,
       user: {
         id: user.id,
-        fullfullName: user.fullName,
+        fullName: user.fullName,
         email: user.email,
         role: user.role,
       },
@@ -83,7 +83,7 @@ exports.me = async (req, res) => {
       where: { id: req.userId },
       select: {
         id: true,
-        fullfullName: true,
+        fullName: true,
         email: true,
         role: true,
         createdAt: true,

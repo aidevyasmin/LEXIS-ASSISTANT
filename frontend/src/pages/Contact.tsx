@@ -1,6 +1,63 @@
-import { MapPin, Phone, Mail, MessageSquare, Clock, Globe, Facebook, Twitter, Instagram } from 'lucide-react';
+import { useState } from 'react';
+import { MapPin, Phone, Mail, MessageSquare, Clock, Globe, Facebook, Twitter, Instagram, Send, Loader2 } from 'lucide-react';
+import { consultations } from '../services/api';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      // Reusing consultation API for contact form
+      await consultations.createRequest({
+        ...formData,
+        phone: 'Not provided', // Contact form doesn't have phone, but it's required by backend
+        caseType: formData.subject || 'Contact Inquiry',
+        method: 'Contact Form'
+      });
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error('Contact Form Error:', err);
+      setError(err.response?.data?.message || 'Failed to send message. Please try again or call 0321 4755492.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center max-w-2xl">
+        <div className="bg-white p-12 rounded-sm shadow-2xl border-t-4 border-legal-gold">
+          <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Send className="w-10 h-10" />
+          </div>
+          <h2 className="text-3xl font-serif font-bold text-legal-blue mb-4">Message Sent!</h2>
+          <p className="text-slate-600 mb-8">
+            Thank you for reaching out, {formData.fullName}. Advocate Nisar Hussain's office has 
+            received your message and will respond to {formData.email} shortly.
+          </p>
+          <button 
+            onClick={() => setSubmitted(false)}
+            className="bg-legal-blue text-white px-8 py-3 rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-black transition-all"
+          >
+            Send Another Message
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-12 animate-in fade-in duration-700">
       <div className="text-center max-w-3xl mx-auto mb-16">
@@ -133,15 +190,58 @@ const Contact = () => {
 
           <div className="bg-white p-8 rounded-sm shadow-lg border border-slate-100">
             <h3 className="text-xl font-serif font-bold text-legal-blue mb-6">Send us a Message</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Your Name" className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm" />
-                <input type="email" placeholder="Your Email" className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm" />
+            
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
+                {error}
               </div>
-              <input type="text" placeholder="Subject" className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm" />
-              <textarea rows={4} placeholder="Your Message" className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm"></textarea>
-              <button className="w-full bg-legal-blue text-white py-4 font-bold uppercase tracking-widest text-xs hover:bg-black transition-all">
-                Send Message
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input 
+                  type="text" 
+                  required
+                  placeholder="Your Name" 
+                  className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                />
+                <input 
+                  type="email" 
+                  required
+                  placeholder="Your Email" 
+                  className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                />
+              </div>
+              <input 
+                type="text" 
+                placeholder="Subject" 
+                className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm"
+                value={formData.subject}
+                onChange={(e) => setFormData({...formData, subject: e.target.value})}
+              />
+              <textarea 
+                rows={4} 
+                required
+                placeholder="Your Message" 
+                className="w-full p-3 bg-slate-50 border border-slate-200 outline-none focus:border-legal-gold text-sm"
+                value={formData.message}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
+              ></textarea>
+              <button 
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-legal-blue text-white py-4 font-bold uppercase tracking-widest text-xs hover:bg-black transition-all flex items-center justify-center space-x-2"
+              >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+                <span>{isLoading ? 'Sending...' : 'Send Message'}</span>
               </button>
             </form>
           </div>

@@ -4,16 +4,18 @@ const mailService = require('../services/mail.service');
 
 exports.createRequest = async (req, res) => {
   try {
-    const { name, phone, caseType, method, message } = req.body;
+    const { fullName, name, email, phone, caseType, method, message } = req.body;
+    const finalName = fullName || name;
 
-    if (!name || !phone || !message) {
+    if (!finalName || !phone || !message) {
       return res.status(400).json({ message: 'Name, phone, and message are required.' });
     }
 
     // Save to Database
     const newRequest = await prisma.consultationRequest.create({
       data: {
-        name,
+        name: finalName,
+        email,
         phone,
         caseType: caseType || 'CIVIL',
         method: method || 'OFFICE VISIT',
@@ -24,6 +26,7 @@ exports.createRequest = async (req, res) => {
 
     // Send Email Notification to Nisar
     await mailService.sendConsultationNotification(newRequest);
+    await mailService.sendClientAcknowledgment(newRequest);
 
     res.status(201).json({ 
         message: 'Your consultation request has been received. Advocate Nisar will contact you shortly.', 

@@ -56,10 +56,10 @@ const Testimonials = () => {
 
             <div className="flex items-center space-x-4 border-t border-slate-100 pt-6">
               <div className="w-12 h-12 bg-legal-blue rounded-full flex items-center justify-center text-white font-bold text-xl">
-                {review.name.charAt(0)}
+                {review.fullName.charAt(0)}
               </div>
               <div>
-                <h4 className="font-bold text-legal-dark">{review.name}</h4>
+                <h4 className="font-bold text-legal-dark">{review.fullName}</h4>
                 <p className="text-xs text-slate-500 uppercase tracking-widest">{review.role}</p>
               </div>
             </div>

@@ -1219,7 +1219,7 @@ from pydantic import BaseModel, EmailStr, validator
 class CreateUserRequest(BaseModel):
     """Validation schema for user creation"""
     email: EmailStr                    # Email format validation
-    userfullName: str
+    username: str
     password: str
     age: int
 

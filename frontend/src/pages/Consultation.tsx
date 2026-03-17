@@ -40,7 +40,7 @@ const Consultation = () => {
           </div>
           <h2 className="text-3xl font-serif font-bold text-legal-blue mb-4">Request Received!</h2>
           <p className="text-slate-600 mb-8">
-            Thank you for reaching out, {formData.name}. Advocate Nisar Hussain's office will 
+            Thank you for reaching out, {formData.fullName}. Advocate Nisar Hussain's office will 
             contact you shortly at {formData.phone} to confirm your {formData.method} appointment.
           </p>
           <button 
@@ -76,7 +76,7 @@ const Consultation = () => {
                   required
                   className="w-full p-3 bg-slate-50 border border-slate-200 focus:border-legal-gold outline-none transition-all"
                   placeholder="John Doe"
-                  value={formData.name}
+                  value={formData.fullName}
                   onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                 />
               </div>

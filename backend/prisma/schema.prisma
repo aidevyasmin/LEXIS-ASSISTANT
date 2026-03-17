@@ -74,6 +74,7 @@ enum InvoiceStatus {
 model ConsultationRequest {
   id              String   @id @default(uuid()) @db.Uuid
   name            String
+  email           String?
   phone           String
   caseType        String
   method          String
