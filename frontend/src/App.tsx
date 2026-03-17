@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import Home from './pages/Home';
@@ -10,6 +9,7 @@ import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
+import Register from './pages/Register'; // <-- Naya Import
 import Dashboard from './pages/Dashboard';
 import CaseManagement from './pages/CaseManagement';
 import LegalAssistant from './pages/LegalAssistant';
@@ -25,6 +25,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MainLayout />}>
+          {/* Public Routes */}
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="services" element={<Services />} />
@@ -34,14 +35,9 @@ function App() {
           <Route path="blog/:id" element={<BlogDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="login" element={<Login />} />
-          
-          <Route path="notepad" element={<Notepad />} />
-          <Route path="case-management" element={<CaseManagement />} />
-          <Route path="law-library" element={<LawLibrary />} />
-          <Route path="legal-assistant" element={<LegalAssistant />} />
-          <Route path="document-generator" element={<DocumentGenerator />} />
+          <Route path="register" element={<Register />} /> {/* <-- Register Route Add Ho Gaya */}
 
-          {/* Protected Routes */}
+          {/* Protected Routes (Inke liye Login hona zaroori hai) */}
           <Route element={<ProtectedRoute />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="cases" element={<CaseManagement />} />
@@ -49,6 +45,7 @@ function App() {
             <Route path="notes" element={<Notepad />} />
             <Route path="library" element={<LawLibrary />} />
             <Route path="client-dashboard" element={<ClientDashboard />} />
+            <Route path="document-generator" element={<DocumentGenerator />} />
           </Route>
         </Route>
       </Routes>
@@ -57,4 +54,3 @@ function App() {
 }
 
 export default App;
-  
