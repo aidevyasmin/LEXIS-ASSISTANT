@@ -1,197 +1,73 @@
-Lexis Assistant is a modern AI-powered legal management platform designed to assist lawyers and law offices in managing cases, legal research, and client communication efficiently.
-
-The application was developed to support Advocate Nisar Hussain Bhatti – High Court by providing a digital platform for legal services, case management, and AI-assisted legal guidance.
-
-This project demonstrates how technology and artificial intelligence can streamline the workflow of legal professionals.
-
-Key Features
-AI Legal Assistant
-
-An intelligent AI chat system capable of assisting with legal queries related to Pakistani law including:
-
-Pakistan Penal Code (PPC)
-
-Criminal Procedure Code (CrPC)
-
-Civil Procedure Code (CPC)
-
-Constitution of Pakistan
-
-Case Management System
-
-A dedicated dashboard for managing legal cases including:
-
-Client name
-
-Client phone number
-
-Case title
-
-Case type
-
-Case description
-
-Document uploads
-
-Case status tracking
-
-Smart Court Notepad
-
-A digital courtroom notebook designed for lawyers to record:
-
-Court notes
-
-Judge remarks
-
-Next hearing date
-
-Important case details
-
-Includes auto-save functionality for quick note management.
-
-Court Date Reminder
-
-Automatically tracks hearing dates and displays reminders in the advocate dashboard to ensure no court appearance is missed.
-
-Digital Law Library
-
-A searchable collection of important Pakistani legal acts in PDF format including:
-
-PPC
-
-CrPC
-
-CPC
-
-Constitution of Pakistan
-
-This allows lawyers to quickly reference legal sections during research.
-
-Legal Document Generator
-
-Generate professional legal documents including:
-
-Affidavits
-
-Legal Notices
-
-Power of Attorney
-
-Applications
-
-Agreements
-
-The AI helps draft legal documents quickly using provided case information.
-
-Client Portal
-
-Clients can securely log in to:
-
-Check their case status
-
-View upcoming hearing dates
-
-Access shared documents
-
-Receive updates from the advocate
-
-Technology Stack
-
-Frontend
-
-React
-
-TypeScript
-
-Tailwind CSS
-
-Vite
-
-Backend
-
-Node.js
-
-Express
-
-Database
-
-PostgreSQL
-
-Prisma ORM
-
-AI Integration
-
-AI-powered legal assistant for legal research and drafting.
-
-Project Structure
-lexis-assistant
-│
-├── frontend
-│   ├── pages
-│   ├── components
-│   └── styles
-│
-├── backend
-│   ├── routes
-│   ├── controllers
-│   ├── prisma
-│   └── server
-│
-└── README.md
-Live Demo
-
-The application can be deployed online for demonstration and legal practice use.
-
-Example deployment platforms:
-
-Vercel
-
-Render
-
-Use Case
-
-Lexis Assistant is ideal for:
-
-Lawyers
-
-Law firms
-
-Legal researchers
-
-Legal tech developers
-
-It helps modernize legal practice by combining AI tools with case management systems.
-
-Future Improvements
-
-Planned features include:
-
-Court calendar integration
-
-WhatsApp client notifications
-
-Advanced legal search engine
-
-Multi-lawyer law firm management
-
-Mobile application support
-
-Author
-
-Developed by
-
-Yasmin Nisar
-Software Developer
-
-Project created to support:
-
-Advocate Nisar Hussain Bhatti – High Court
-
-License
-
-This project is developed for educational and professional legal technology demonstration purposes.                                          
-.
-update deploy
-# Lexis Assistant
-
-🚀 **Live Demo:** [https://lexis-assistant.vercel.app](https://lexis-assistant.vercel.app)
+# React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
