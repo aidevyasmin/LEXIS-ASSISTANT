@@ -11,9 +11,9 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "backend/src/app.js" },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "backend/src/app.js" },
     { "handle": "filesystem" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
