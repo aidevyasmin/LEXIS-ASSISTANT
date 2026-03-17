@@ -12,17 +12,8 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "backend/src/app.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/frontend/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/frontend/index.html"
-    }
+    { "source": "/api/(.*)", "destination": "backend/src/app.js" },
+    { "handle": "filesystem" },
+    { "source": "/(.*)", "destination": "/frontend/index.html" }
   ]
 }

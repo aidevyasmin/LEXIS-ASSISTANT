@@ -67,6 +67,11 @@ const Consultation = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
         <div className="lg:col-span-2">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm animate-in fade-in duration-300">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="bg-white p-8 rounded-sm shadow-xl border border-slate-100 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
