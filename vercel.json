@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "buildCommand": "npm run vercel-build",
   "builds": [
     {
       "src": "package.json",
@@ -11,8 +12,12 @@
       "use": "@vercel/node"
     }
   ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "backend/src/app.js" },
+    { "source": "/auth/(.*)", "destination": "backend/src/app.js" },
+    { "source": "/uploads/(.*)", "destination": "backend/src/app.js" }
+  ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "backend/src/app.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]

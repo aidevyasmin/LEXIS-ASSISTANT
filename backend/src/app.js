@@ -151,18 +151,16 @@ if (require.main === module) {
   
   prisma.$queryRaw`SELECT 1`.then(() => {
     console.log('✅ Database connection stable (Prisma)');
-    const server = app.listen(PORT, () => {
+    app.listen(PORT, () => {
       console.log(`Server running securely on port ${PORT}`);
     });
 
     process.on('unhandledRejection', (err, promise) => {
       console.log(`❌ Error: ${err.message}`);
-      server.close(() => process.exit(1));
     });
   }).catch(err => {
     console.error('❌ Database connection failed. Server not started.');
     console.error(err);
-    process.exit(1);
   });
 }
 
