@@ -122,7 +122,7 @@ const Dashboard = () => {
             <div className="p-6 space-y-4">
               {data?.upcomingAppointments?.length > 0 ? data.upcomingAppointments.map((appt: any) => (
                 <div key={appt.id} className="p-5 rounded-sm border-l-2 border-legal-gold bg-slate-50 hover:bg-white hover:shadow-md transition-all">
-                  <p className="font-bold text-legal-dark text-sm">{appt.clientName}</p>
+                  <p className="font-bold text-legal-dark text-sm">{appt.clientFullName}</p>
                   <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">{new Date(appt.slotStart).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                 </div>
               )) : (

@@ -146,13 +146,23 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
-  const server = app.listen(PORT, () => {
-    console.log(`Server running securely on port ${PORT}`);
-  });
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  
+  prisma.$queryRaw`SELECT 1`.then(() => {
+    console.log('✅ Database connection stable (Prisma)');
+    const server = app.listen(PORT, () => {
+      console.log(`Server running securely on port ${PORT}`);
+    });
 
-  process.on('unhandledRejection', (err, promise) => {
-    console.log(`❌ Error: ${err.message}`);
-    server.close(() => process.exit(1));
+    process.on('unhandledRejection', (err, promise) => {
+      console.log(`❌ Error: ${err.message}`);
+      server.close(() => process.exit(1));
+    });
+  }).catch(err => {
+    console.error('❌ Database connection failed. Server not started.');
+    console.error(err);
+    process.exit(1);
   });
 }
 

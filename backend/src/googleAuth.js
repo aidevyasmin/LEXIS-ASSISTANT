@@ -27,7 +27,7 @@ passport.use(
         const user = await prisma.user.upsert({
           where: { email },
           update: {
-            fullfullName: fullName,
+            fullName: fullName,
           },
           create: {
             email,

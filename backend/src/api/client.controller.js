@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const mailService = require('../services/mail.service');
 
 // Create a new client (Intake Form)
 exports.createClient = async (req, res) => {
@@ -24,6 +25,20 @@ exports.createClient = async (req, res) => {
         status: 'NEW',
       },
     });
+
+    // Notify Advocate Nisar
+    try {
+      await mailService.sendConsultationNotification({
+        name: fullName,
+        phone,
+        email,
+        caseType: caseType || 'OTHER',
+        message: `New Client Intake: ${caseDescription}`,
+        method: 'ONLINE INTAKE'
+      });
+    } catch (e) {
+      console.error('Intake notification failed:', e);
+    }
 
     res.status(201).json(newClient);
   } catch (error) {

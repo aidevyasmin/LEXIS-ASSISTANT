@@ -24,9 +24,13 @@ exports.createRequest = async (req, res) => {
       }
     });
 
-    // Send Email Notification to Nisar
-    await mailService.sendConsultationNotification(newRequest);
-    await mailService.sendClientAcknowledgment(newRequest);
+    // Send Email Notification to Nisar (Non-blocking)
+    try {
+      await mailService.sendConsultationNotification(newRequest);
+      await mailService.sendClientAcknowledgment(newRequest);
+    } catch (e) {
+      console.error('Email Notification failed but request was saved:', e);
+    }
 
     res.status(201).json({ 
         message: 'Your consultation request has been received. Advocate Nisar will contact you shortly.', 

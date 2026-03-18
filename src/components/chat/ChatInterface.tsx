@@ -1,30 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, Paperclip, Clock, Mic, MicOff, Shield, Award } from 'lucide-react';
-import { clients, appointments, payments } from '../../services/api';
+import { useNavigate, Link } from 'react-router-dom';
+import { Send, Paperclip, Clock, Mic, MicOff, Shield, Award, User, LogIn, Phone } from 'lucide-react';
+import { clients, appointments, payments, consultations } from '../../services/api';
 
 type Message = {
   id: number;
   sender: 'bot' | 'user';
   text: string;
-  type?: 'text' | 'options' | 'input' | 'file' | 'slots';
+  type?: 'text' | 'options' | 'input' | 'file' | 'slots' | 'links';
   options?: string[];
   slots?: any[];
+  links?: { label: string, url: string, icon?: any }[];
 };
 
 const ChatInterface = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       sender: 'bot',
-      text: "As-salamu alaykum! I am Lexis, the AI Assistant for Advocate Nisar Hussain. I'm here to help you schedule a professional consultation. How may I address you?",
-      type: 'input'
+      text: "As-salamu alaykum! I am Lexis, the AI Assistant for Advocate Nisar Hussain. I'm here to help you schedule a professional consultation or guide you through our portal. How may I assist you today?",
+      type: 'options',
+      options: ['Book Consultation', 'Contact Office', 'Login to Portal']
     }
   ]);
   const [inputText, setInputText] = useState('');
-  const [step, setStep] = useState(0); 
+  const [step, setStep] = useState(-1); // -1 means initial choice
   const [formData, setFormData] = useState({
-    fullfullName: '',
+    fullName: '',
     phone: '',
+    email: '',
     caseType: '',
     caseDescription: '',
     clientId: '',
@@ -103,9 +108,65 @@ const ChatInterface = () => {
   };
 
   const processInput = async (text: string) => {
+    // Initial Choice
+    if (step === -1) {
+      if (text.toLowerCase().includes('book') || text === 'Book Consultation') {
+        addMessage("Excellent choice. To begin, may I have your full name?", 'bot', 'input');
+        setStep(0);
+      } else if (text.toLowerCase().includes('contact') || text === 'Contact Office') {
+        addMessage("You can contact Advocate Nisar's office directly:", 'bot', 'links', {
+          links: [
+            { label: 'Call: 0321 4755492', url: 'tel:03214755492', icon: Phone },
+            { label: 'Email: nisarpulc1234@gmail.com', url: 'mailto:nisarpulc1234@gmail.com', icon: Mail }
+          ]
+        });
+        addMessage("Would you like to leave a message for us to call you back?", 'bot', 'options', {
+          options: ['Yes, leave a message', 'No, thanks']
+        });
+        setStep(10); // Contact flow
+      } else if (text.toLowerCase().includes('login') || text === 'Login to Portal') {
+        addMessage("Redirecting you to the secure login portal...", 'bot');
+        setTimeout(() => navigate('/login'), 1500);
+      } else {
+        addMessage("I'm sorry, I didn't quite get that. Would you like to book a consultation, contact us, or login?", 'bot', 'options', {
+          options: ['Book Consultation', 'Contact Office', 'Login to Portal']
+        });
+      }
+      return;
+    }
+
+    // Contact Flow
+    if (step >= 10) {
+      if (step === 10) {
+        if (text === 'Yes, leave a message') {
+          addMessage("Please provide your name and phone number so we can reach out to you.", 'bot', 'input');
+          setStep(11);
+        } else {
+          addMessage("Understood. Let me know if you need anything else!", 'bot', 'options', {
+            options: ['Book Consultation', 'Login to Portal']
+          });
+          setStep(-1);
+        }
+      } else if (step === 11) {
+        addMessage(`Thank you. We have received your request. Advocate Nisar will be notified at nisarpulc1234@gmail.com.`, 'bot');
+        // Actually send a consultation request as a "Contact" method
+        try {
+          await consultations.createRequest({
+            name: text,
+            phone: 'Not provided', // Simplified
+            message: 'User requested contact via Lexis Assistant.',
+            method: 'PHONE'
+          });
+        } catch (e) { console.error(e); }
+        setStep(-1);
+      }
+      return;
+    }
+
+    // Booking Flow
     switch (step) {
       case 0:
-        setFormData(prev => ({ ...prev, fullfullName: text }));
+        setFormData(prev => ({ ...prev, fullName: text }));
         addMessage(`It is a pleasure, ${text}. May I have your phone number to proceed?`, 'bot', 'input');
         setStep(1);
         break;
@@ -124,6 +185,7 @@ const ChatInterface = () => {
         else if (text === 'Criminal Defense') mappedType = 'CRIMINAL';
         else if (text === 'Family Law') mappedType = 'FAMILY';
         else if (text === 'Property Dispute') mappedType = 'PROPERTY';
+        else if (text === 'Corporate') mappedType = 'CIVIL'; // Map corporate to civil or keep other
         
         setFormData(prev => ({ ...prev, caseType: mappedType }));
         addMessage("Understood. Please provide a brief description of your case for Advocate Nisar's review.", 'bot', 'input');
@@ -135,9 +197,19 @@ const ChatInterface = () => {
         setFormData(updatedData); 
         
         try {
+          // 1. Create Client Intake
           const res = await clients.intake(updatedData);
           const newClientId = res.data.id;
           setFormData(prev => ({ ...prev, clientId: newClientId, caseDescription: text }));
+
+          // 2. Also create a Consultation Request to trigger Email to Nisar
+          await consultations.createRequest({
+            name: formData.fullName,
+            phone: formData.phone,
+            caseType: formData.caseType,
+            message: text,
+            method: 'OFFICE VISIT'
+          });
 
           const tomorrow = new Date();
           tomorrow.setDate(tomorrow.getDate() + 1);
@@ -150,7 +222,7 @@ const ChatInterface = () => {
           dayAfter.setDate(dayAfter.getDate() + 1);
           dayAfter.setHours(11, 0, 0, 0);
 
-          addMessage("Excellent. Your details have been securely recorded. Please select a preferred time for your consultation:", 'bot', 'slots', {
+          addMessage("Excellent. Your details have been securely recorded and Advocate Nisar has been notified. Please select a preferred time for your consultation:", 'bot', 'slots', {
             slots: [
               { id: 1, time: 'Tomorrow 10:00 AM', date: tomorrow.toLocaleDateString(), start: tomorrow.toISOString(), end: new Date(tomorrow.getTime() + 60*60*1000).toISOString() },
               { id: 2, time: 'Tomorrow 2:00 PM', date: tomorrowAfternoon.toLocaleDateString(), start: tomorrowAfternoon.toISOString(), end: new Date(tomorrowAfternoon.getTime() + 60*60*1000).toISOString() },
@@ -158,9 +230,10 @@ const ChatInterface = () => {
             ]
           });
           setStep(4);
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            addMessage("I apologize, but there was an error processing your request. Please try again or call 0321 4755492.", 'bot');
+            const errorMsg = err.response?.data?.message || "I apologize, but there was an error processing your request.";
+            addMessage(`${errorMsg} Please try again or call 0321 4755492.`, 'bot');
         }
         break;
 
@@ -195,7 +268,7 @@ const ChatInterface = () => {
 
         setTimeout(() => {
             setIsTyping(false);
-            addMessage("To finalize your reservation, a consultation fee of 1,000 PKR is required. Please upload a screenshot of your payment receipt.", 'bot', 'file');
+            addMessage("To finalize your reservation, a consultation fee of 1,000 PKR is required. Please upload a screenshot of your payment receipt (EasyPaisa/JazzCash).", 'bot', 'file');
             setStep(5);
         }, 1000);
 
@@ -224,8 +297,11 @@ const ChatInterface = () => {
       try {
         await payments.uploadProof(formDataUpload);
         setIsTyping(false);
-        addMessage("Payment received successfully! Your consultation is now pending final review by Advocate Nisar. You will be notified shortly.", 'bot');
-        setStep(6);
+        addMessage("Payment receipt received! Your consultation is now being verified. Advocate Nisar's team will contact you shortly on your phone.", 'bot');
+        addMessage("You can now login to your portal to track your case and documents.", 'bot', 'options', {
+            options: ['Login to Portal']
+        });
+        setStep(-1);
       } catch (err) {
         setIsTyping(false);
         console.error(err);
@@ -235,7 +311,7 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="flex flex-col h-[550px] w-full bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-100 font-sans">
+    <div className="flex flex-col h-[600px] w-full bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-100 font-sans">
       <div className="bg-legal-blue text-white p-4 flex items-center justify-between shadow-md">
         <div className="flex items-center space-x-3">
           <div className="relative">
@@ -249,7 +325,11 @@ const ChatInterface = () => {
             <span className="text-[10px] text-slate-300 uppercase tracking-widest font-bold">Secure Intake System</span>
           </div>
         </div>
-        <Award className="w-5 h-5 text-legal-gold opacity-50" />
+        <div className="flex items-center space-x-2">
+            <button onClick={() => navigate('/login')} className="p-2 hover:bg-white/10 rounded-full transition-all text-legal-gold" title="Login">
+                <LogIn className="w-5 h-5" />
+            </button>
+        </div>
       </div>
 
       <div className="flex-grow overflow-y-auto p-6 space-y-6 bg-slate-50">
@@ -268,6 +348,17 @@ const ChatInterface = () => {
                     <button key={opt} onClick={() => handleOptionClick(opt)} className="bg-slate-50 hover:bg-legal-gold hover:text-black text-legal-blue text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-sm transition-all border border-slate-200">
                       {opt}
                     </button>
+                  ))}
+                </div>
+              )}
+
+              {msg.type === 'links' && (
+                <div className="mt-4 space-y-2">
+                  {msg.links?.map(link => (
+                    <a key={link.label} href={link.url} className="w-full flex items-center space-x-3 bg-white hover:bg-slate-50 p-3 rounded-sm border border-slate-200 transition-all group">
+                        {link.icon && <link.icon className="w-4 h-4 text-legal-gold" />}
+                        <span className="text-xs font-bold text-legal-blue">{link.label}</span>
+                    </a>
                   ))}
                 </div>
               )}

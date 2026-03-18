@@ -65,7 +65,7 @@ exports.getAllAppointments = async (req, res) => {
       orderBy: { slotStart: 'asc' },
       include: {
         client: {
-          select: { fullfullName: true, phone: true }
+          select: { fullName: true, phone: true }
         }
       }
     });

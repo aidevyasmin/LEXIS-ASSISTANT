@@ -33,7 +33,7 @@ exports.getDashboardOverview = async (req, res) => {
       },
       orderBy: { slotStart: 'asc' },
       include: {
-        client: { select: { fullfullName: true, phone: true, email: true } },
+        client: { select: { fullName: true, phone: true, email: true } },
       },
     });
 
@@ -45,7 +45,7 @@ exports.getDashboardOverview = async (req, res) => {
       upcomingAppointments: upcomingAppointments.map(app => ({
         id: app.id,
         slotStart: app.slotStart,
-        clientfullName: app.client.fullName,
+        clientFullName: app.client.fullName,
       })),
     });
   } catch (error) {
