@@ -16,7 +16,7 @@ FILES_YAML:
   - vite.config.ts
   - backend/package.json
 TESTS_YAML:
-  - curl http://localhost:5000/health
+  - curl /api/health
 PROMPT_TEXT: |
   Consultation.tsx:27 Consultation Booking Error: AxiosError: Request failed with status code 404
 RESPONSE_TEXT: |

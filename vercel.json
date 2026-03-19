@@ -1,24 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    },
-    {
-      "src": "backend/src/app.js",
-      "use": "@vercel/node"
-    }
-  ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "backend/src/app.js" },
-    { "source": "/auth/(.*)", "destination": "backend/src/app.js" },
-    { "source": "/uploads/(.*)", "destination": "backend/src/app.js" }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/auth/(.*)", "destination": "/api/index.js" },
+    { "source": "/uploads/(.*)", "destination": "/api/index.js" },
+    { "source": "/((?!api|auth|uploads).*)", "destination": "/index.html" }
   ]
 }

@@ -20,7 +20,7 @@ files:
   - frontend.log
 tests:
   - netstat -ano | findstr ":5000 :5173 :5432"
-  - Invoke-RestMethod -Uri 'http://localhost:5000/health'
+  - Invoke-RestMethod -Uri '/api/health'
 ---
 
 ## Prompt

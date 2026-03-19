@@ -20,7 +20,7 @@ files:
   - backend/update-user-password.js
 tests:
   - node update-user-password.js
-  - curl.exe -I http://localhost:5000
+  - curl.exe -I /api
 ---
 
 ## Prompt

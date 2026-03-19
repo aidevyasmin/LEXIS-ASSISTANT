@@ -15,7 +15,7 @@ FILES_YAML:
   - backend/src/services/ai.service.js
   - backend/src/api/ai.controller.js
 TESTS_YAML:
-  - Invoke-RestMethod -Uri http://localhost:5000/api/ai/generate-draft -Method Post -Body '{"prompt": "divorce case"}' -ContentType "application/json"
+  - Invoke-RestMethod -Uri /api/api/ai/generate-draft -Method Post -Body '{"prompt": "divorce case"}' -ContentType "application/json"
 ---
 
 ## PROMPT_TEXT

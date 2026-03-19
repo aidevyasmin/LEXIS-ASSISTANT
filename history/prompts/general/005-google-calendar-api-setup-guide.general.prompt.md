@@ -8,7 +8,7 @@ model: gemini-2.0-flash
 feature: lexis-assistant
 branch: 002-nisar-hussain-assistant
 user: User
-command: I want to integrate Google Calendar API in my Node.js backend.Instead of asking for client_secret.json manually, please guide me step-by-step to:1. Create OAuth credentials correctly in Google Cloud Console.2. Use Web Application type.3. Set correct Authorized Redirect URI.4. Provide the exact environment variables needed (.env format).5. Show the minimal secure Node.js example using googleapis package.6. Do NOT require desktop client flow.7. Keep it production-ready and secure.My backend runs on:http://localhost:5000Redirect URI should match this environment.
+command: I want to integrate Google Calendar API in my Node.js backend.Instead of asking for client_secret.json manually, please guide me step-by-step to:1. Create OAuth credentials correctly in Google Cloud Console.2. Use Web Application type.3. Set correct Authorized Redirect URI.4. Provide the exact environment variables needed (.env format).5. Show the minimal secure Node.js example using googleapis package.6. Do NOT require desktop client flow.7. Keep it production-ready and secure.My backend runs on:/apiRedirect URI should match this environment.
 labels: ["Google Calendar API", "Integration Guide", "OAuth", "Node.js"]
 links:
   spec: spec.md
@@ -21,7 +21,7 @@ tests: null
 
 ## Prompt
 
-I want to integrate Google Calendar API in my Node.js backend.Instead of asking for client_secret.json manually, please guide me step-by-step to:1. Create OAuth credentials correctly in Google Cloud Console.2. Use Web Application type.3. Set correct Authorized Redirect URI.4. Provide the exact environment variables needed (.env format).5. Show the minimal secure Node.js example using googleapis package.6. Do NOT require desktop client flow.7. Keep it production-ready and secure.My backend runs on:http://localhost:5000Redirect URI should match this environment.
+I want to integrate Google Calendar API in my Node.js backend.Instead of asking for client_secret.json manually, please guide me step-by-step to:1. Create OAuth credentials correctly in Google Cloud Console.2. Use Web Application type.3. Set correct Authorized Redirect URI.4. Provide the exact environment variables needed (.env format).5. Show the minimal secure Node.js example using googleapis package.6. Do NOT require desktop client flow.7. Keep it production-ready and secure.My backend runs on:/apiRedirect URI should match this environment.
 
 ## Response snapshot
 
@@ -30,7 +30,7 @@ I understand you'd like a step-by-step guide to set up Google Calendar API integ
 I will provide a detailed, production-ready guide to:
 1.  **Google Cloud Console Setup**: Instructions for enabling the API, creating a "Web application" OAuth client ID, and configuring the correct Authorized Redirect URI.
 2.  **Environment Variables**: The exact `.env` format needed for the credentials.
-3.  **Secure Node.js Example**: Minimal Node.js code using `googleapis` for authentication and token management, ensuring a web-based flow suitable for your `http://localhost:5000` backend.
+3.  **Secure Node.js Example**: Minimal Node.js code using `googleapis` for authentication and token management, ensuring a web-based flow suitable for your `/api` backend.
 
 Let's start with the Google Cloud Console setup.
 
@@ -60,7 +60,7 @@ Let's start with the Google Cloud Console setup.
     *   For "Application type", select **"Web application"**.
     *   Give it a **Name**: e.g., "Lexis Assistant Web App Client".
     *   **Authorized JavaScript origins**: Add `http://localhost:3000` (assuming this is your frontend's address). If you have a production frontend, add that URL too.
-    *   **Authorized redirect URIs**: Add `http://localhost:5000/api/google/oauth2callback`. This is where Google will redirect the user after they grant permission.
+    *   **Authorized redirect URIs**: Add `/api/api/google/oauth2callback`. This is where Google will redirect the user after they grant permission.
     *   Click "CREATE".
     *   A dialog will appear showing your **Client ID** and **Client Secret**. **Copy these values immediately.** They will be needed for your `.env` file. You can also download the JSON file, but copying the values directly is often easier for `.env` setup.
 
@@ -72,7 +72,7 @@ Now that you have your Client ID and Client Secret, add them to your `backend/.e
 # Google Calendar API Credentials
 GOOGLE_CLIENT_ID="YOUR_CLIENT_ID_HERE"
 GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET_HERE"
-GOOGLE_REDIRECT_URI="http://localhost:5000/api/google/oauth2callback"
+GOOGLE_REDIRECT_URI="/api/api/google/oauth2callback"
 # This is the scope we selected in Google Cloud Console
 GOOGLE_CALENDAR_SCOPE="https://www.googleapis.com/auth/calendar"
 ```

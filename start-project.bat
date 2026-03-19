@@ -22,7 +22,7 @@ start "Frontend Dev" cmd /c "cd frontend && npm run dev"
 echo.
 echo --------------------------------------------------
 echo Success! All services are being started in new windows.
-echo - Backend: http://localhost:5000/health
+echo - Backend: /api/health
 echo - Frontend: http://localhost:5173
 echo --------------------------------------------------
 pause
