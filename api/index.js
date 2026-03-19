@@ -1,5 +1,5 @@
-const app = require('../backend/src/app');
+import app from '../backend/src/app.js';
 
-module.exports = (req, res) => {
+export default (req, res) => {
   return app(req, res);
 };
