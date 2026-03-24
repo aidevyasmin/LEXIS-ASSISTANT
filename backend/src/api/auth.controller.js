@@ -2,7 +2,61 @@ const prisma = require('../models/prisma');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// ... (existing code: register method remains the same but uses the new prisma)
+// Register a new user
+exports.register = async (req, res) => {
+  try {
+    const { fullName, email, password, role } = req.body;
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    // Create the user
+    const user = await prisma.user.create({
+      data: {
+        fullName,
+        email,
+        passwordHash,
+        role: role || 'CLIENT',
+      },
+    });
+
+    // Create JWT
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error('❌ JWT_SECRET is missing in environment variables');
+      return res.status(500).json({ message: 'Authentication configuration error' });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      secret,
+      { expiresIn: '30d' }
+    );
+
+    res.status(201).json({
+      token,
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Registration Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
 
 // Login user
 exports.login = async (req, res) => {

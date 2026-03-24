@@ -17,7 +17,7 @@ start "Backend Server" cmd /c "cd backend && npm start"
 
 echo.
 echo [3/3] Starting Frontend (Port 5173)...
-start "Frontend Dev" cmd /c "cd frontend && npm run dev"
+start "Frontend Dev" cmd /c "npm run dev"
 
 echo.
 echo --------------------------------------------------
