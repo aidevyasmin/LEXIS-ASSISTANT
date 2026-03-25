@@ -12,31 +12,30 @@ if (!fs.existsSync(uploadDir)) {
 // Define storage for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Specify the directory where files will be stored
     cb(null, uploadDir);
   },
-  filefullName: (req, file, cb) => {
-    // Generate a unique filename using UUID and preserve the original extension
+
+  filename: (req, file, cb) => {
     const uniqueSuffix = uuidv4();
     cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
 
-// File filter to allow only images (for payment proofs)
+// File filter
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files are allowed for payment proofs!'), false);
+    cb(new Error('Only image files are allowed!'), false);
   }
 };
 
-// Initialize multer upload middleware
+// Multer config
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB file size limit as per spec (T009)
+    fileSize: 5 * 1024 * 1024,
   },
 });
 

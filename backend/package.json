@@ -30,7 +30,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.19.0",
-    "uuid": "^13.0.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "prisma": "^5.22.0"
