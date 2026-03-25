@@ -292,3 +292,7 @@ model LegalDocument {
 
   createdAt   DateTime @default(now())
 }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
