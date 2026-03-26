@@ -1,31 +1,31 @@
 const { PrismaClient } = require('@prisma/client');
 
-if (!process.env.DATABASE_URL) {
+// ✅ Ensure DATABASE_URL exists
+const dbUrl = process.env.DATABASE_URL;
+
+if (!dbUrl) {
   console.error('❌ DATABASE_URL is not defined in environment variables');
+  throw new Error('DATABASE_URL is missing');
 }
 
-let prisma;
+// ✅ Use globalThis for serverless environments
+const globalForPrisma = global;
 
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient({
+// ✅ Create Prisma instance
+const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
     datasources: {
       db: {
-        url: process.env.DATABASE_URL,
+        url: dbUrl,
       },
     },
+    log: ['error'], // optional: add 'query' for debugging
   });
-} else {
-  // Use global to preserve instance between hot reloads in dev
-  if (!global.prisma) {
-    global.prisma = new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL,
-        },
-      },
-    });
-  }
-  prisma = global.prisma;
+
+// ✅ Prevent multiple instances in dev
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
 }
 
 module.exports = prisma;
