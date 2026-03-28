@@ -23,6 +23,7 @@ files_yaml: |
   - frontend/package-lock.json
   - frontend/api/index.js
   - frontend/public/favicon.ico
+  - frontend/vercel.json
   - start-project.bat
   - package.json
 tests_yaml: |
@@ -31,7 +32,7 @@ tests_yaml: |
 ---
 
 ## Summary
-Fixed the "Root Directory 'frontend' does not exist" and "vite: command not found" Vercel errors. Restructured the project by moving all relevant files (frontend, backend, api, package-lock.json) into the `frontend` directory to align with Vercel's root directory setting. Made the Prisma connection more robust for Vercel's serverless environment and added a favicon to resolve console 404 errors. Added detailed error logging to the login controller and updated the build script to ensure Prisma client is generated during the Vercel deployment.
+Fixed the "Root Directory 'frontend' does not exist" and "vite: command not found" Vercel errors. Restructured the project by moving all relevant files (frontend, backend, api, package-lock.json) into the `frontend` directory to align with Vercel's root directory setting. Corrected `vercel.json` to handle SPA routing (preventing 404 on refresh) and mapped auth routes to the serverless function. Made the Prisma connection more robust for Vercel's serverless environment and added a favicon. Added detailed error logging to the login controller and updated the build script to ensure Prisma client is generated during the Vercel deployment.
 
 ## Prompt
 "The specified Root Directory "frontend" does not exist. Please update your Project Settings. ab ya msla a rha h thaq chuki hon 1.5 month ho gya h ma na apni cv ma add krna h ya project kya kron paghl jo ri hon 1 internshi nhi mil rhi jo b kro ab aj ya mujy set kr k do bus sb kuch ab ma kuch nhi krna mary project ko kuch na h jo ho skt h ro environment variables sb add h frnted backend 2ono hi versel pr deloyed h kam start kro kya krna h kya nhi loin error fix kro mujy bus mari website k sary functions set chahiya working krty hoay"
