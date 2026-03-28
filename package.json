@@ -1,9 +1,13 @@
 {
   "name": "lexis-assistant-root",
   "private": true,
+  "workspaces": [
+    "frontend",
+    "frontend/backend"
+  ],
   "scripts": {
-    "dev": "cd frontend && npm run dev",
-    "build": "cd frontend && npm run build",
-    "install-all": "cd frontend && npm install && cd backend && npm install"
+    "dev": "npm run dev -w lexis-assistant",
+    "build": "npm run build -w lexis-assistant",
+    "install-all": "npm install"
   }
 }
