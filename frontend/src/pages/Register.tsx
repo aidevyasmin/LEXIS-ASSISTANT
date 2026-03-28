@@ -27,9 +27,18 @@ const Register = () => {
       await auth.register(formData);
       navigate('/login');
     } catch (err: any) {
-      const serverError = err.response?.data?.error || err.response?.data?.message || 'Registration failed. Please try again.';
-      setError(serverError);
-      console.error('Registration Error:', err.response?.data);
+      const data = err.response?.data;
+      let errorMessage = 'Registration failed. Please try again.';
+      
+      if (typeof data === 'string') {
+        errorMessage = data;
+      } else if (data && typeof data === 'object') {
+        // Look for message in different common error structures
+        errorMessage = data.error?.message || data.message || data.error || JSON.stringify(data);
+      }
+      
+      setError(errorMessage);
+      console.error('Registration Error:', data);
     } finally {
       setIsLoading(false);
     }
