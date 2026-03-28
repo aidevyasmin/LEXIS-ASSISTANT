@@ -13,7 +13,15 @@ const prisma = new PrismaClient({
       url: dbUrl,
     },
   },
-  log: ['error'],
+  // Ensure we don't spam connections in serverless environments
+  log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
 });
+
+// Test connection only once to avoid performance hits
+if (process.env.NODE_ENV !== 'production') {
+  prisma.$connect()
+    .then(() => console.log('✅ Connected to database successfully'))
+    .catch((err) => console.error('❌ Database connection error:', err));
+}
 
 module.exports = prisma;
