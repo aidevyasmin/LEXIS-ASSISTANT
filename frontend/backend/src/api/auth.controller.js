@@ -33,8 +33,8 @@ exports.register = async (req, res) => {
     // Create JWT
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      console.error('❌ JWT_SECRET is missing in environment variables');
-      return res.status(500).json({ message: 'Authentication configuration error' });
+      console.error('❌ CRITICAL: JWT_SECRET is missing in environment variables');
+      return res.status(500).json({ message: 'Authentication configuration error (Missing JWT_SECRET)' });
     }
 
     const token = jwt.sign(
@@ -53,8 +53,13 @@ exports.register = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Registration Error:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('❌ Registration Error Detailed:', error);
+    // Return the specific error message to the frontend for debugging
+    res.status(500).json({ 
+      message: 'Registration failed on server', 
+      error: error.message,
+      code: error.code // Prisma error codes are useful
+    });
   }
 };
 

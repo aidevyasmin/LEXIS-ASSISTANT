@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run build -w backend",
+    "build": "vite build && npm run build -w backend && npx prisma generate",
     "lint": "eslint .",
     "preview": "vite preview",
     "vercel-build": "npm run build"
