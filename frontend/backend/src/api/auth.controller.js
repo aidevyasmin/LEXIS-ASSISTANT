@@ -62,18 +62,26 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(`Attempting login for email: ${email}`);
+
+    if (!prisma) {
+      console.error('❌ Prisma client not initialized!');
+      return res.status(500).json({ message: 'Database connection error' });
+    }
 
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
     if (!user) {
+      console.log(`❌ User not found: ${email}`);
       return res.status(404).json({ message: 'User not found' });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!isMatch) {
+      console.log(`❌ Invalid password for: ${email}`);
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -89,6 +97,7 @@ exports.login = async (req, res) => {
       { expiresIn: '30d' }
     );
 
+    console.log(`✅ Login successful: ${email}`);
     res.status(200).json({
       token,
       user: {
@@ -99,7 +108,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error('❌ Login Error:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

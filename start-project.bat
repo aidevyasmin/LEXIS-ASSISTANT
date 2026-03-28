@@ -13,11 +13,11 @@ if %errorlevel% equ 0 (
 
 echo.
 echo [2/3] Starting Backend (Port 5000)...
-start "Backend Server" cmd /c "cd backend && npm start"
+start "Backend Server" cmd /c "cd frontend/backend && npm start"
 
 echo.
 echo [3/3] Starting Frontend (Port 5173)...
-start "Frontend Dev" cmd /c "npm run dev"
+start "Frontend Dev" cmd /c "cd frontend && npm run dev"
 
 echo.
 echo --------------------------------------------------

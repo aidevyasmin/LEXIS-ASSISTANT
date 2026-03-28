@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../models/prisma');
 const mailService = require('../services/mail.service');
 
 exports.createRequest = async (req, res) => {

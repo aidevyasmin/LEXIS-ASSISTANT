@@ -1,7 +1,6 @@
 const { generateAuthUrl, getTokensAndSave, setCredentials, oauth2Client } = require('../services/googleAuthService');
 const { google } = require('googleapis');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../models/prisma');
 
 // Redirect to Google for OAuth consent
 exports.googleAuth = (req, res) => {

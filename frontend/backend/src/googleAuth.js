@@ -1,7 +1,6 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("./models/prisma");
 require("dotenv").config();
 
 // Ensure the server doesn't crash if Google Auth is not configured
