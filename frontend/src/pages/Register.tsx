@@ -33,12 +33,13 @@ const Register = () => {
       if (typeof data === 'string') {
         errorMessage = data;
       } else if (data && typeof data === 'object') {
-        // Look for message in different common error structures
-        errorMessage = data.error?.message || data.message || data.error || JSON.stringify(data);
+        errorMessage = data.error?.message || data.message || data.error || JSON.stringify(data, null, 2);
+      } else if (err.message) {
+        errorMessage = err.message;
       }
       
       setError(errorMessage);
-      console.error('Registration Error:', data);
+      console.error('CRITICAL Registration Error:', JSON.stringify(data || err, null, 2));
     } finally {
       setIsLoading(false);
     }
