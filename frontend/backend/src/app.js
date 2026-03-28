@@ -147,6 +147,9 @@ app.use((err, req, res, next) => {
  */
 const PORT = process.env.PORT || 5000;
 
+// Export app BEFORE the server-starting logic
+module.exports = app;
+
 if (require.main === module) {
   const { PrismaClient } = require('@prisma/client');
   const prisma = new PrismaClient();
@@ -165,5 +168,3 @@ if (require.main === module) {
     console.error(err);
   });
 }
-
-module.exports = app;
