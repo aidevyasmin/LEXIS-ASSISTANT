@@ -1,33 +1,32 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { createRequire } from 'module';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const require = createRequire(import.meta.url);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Static import is much more reliable for Vercel's bundler
+import app from '../frontend/backend/src/app.js';
 
 export default async (req, res) => {
+  // Direct health check to verify the API is alive
+  if (req.url === '/api/health-check') {
+    return res.status(200).json({ status: 'API is Live on Vercel' });
+  }
+
   try {
-    // Explicitly find the file from the project root
-    const appPath = join(__dirname, '../frontend/backend/src/app.js');
-    console.log('--- Attempting to load app from path:', appPath);
+    // Vercel sometimes wraps the export in a default object
+    const finalApp = app.default || app;
     
-    const app = require(appPath);
-    
-    if (typeof app !== 'function') {
-      throw new Error(`The backend app was not exported correctly as a function. Received: ${typeof app}`);
+    if (typeof finalApp !== 'function') {
+      return res.status(500).json({
+        message: 'Backend initialization error',
+        details: `App is a ${typeof finalApp} instead of a function`
+      });
     }
 
-    return app(req, res);
+    return finalApp(req, res);
   } catch (error) {
-    console.error('CRITICAL API ERROR IN VERCEL FUNCTION:', error);
+    console.error('CRITICAL VERCEL RUNTIME ERROR:', error);
     return res.status(500).json({
-      message: 'API failed to start on Vercel server',
-      details: error.message,
-      path_attempted: join(__dirname, '../frontend/backend/src/app.js')
+      message: 'API Runtime Error',
+      error: error.message
     });
   }
 };
