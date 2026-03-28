@@ -147,24 +147,22 @@ app.use((err, req, res, next) => {
  */
 const PORT = process.env.PORT || 5000;
 
-// Export app BEFORE the server-starting logic
+// Export the app so it can be used by the Vercel function in api/index.js
 module.exports = app;
 
 if (require.main === module) {
+  // Only start a listening server if this file is run directly (local dev)
+  const PORT = process.env.PORT || 5000;
   const { PrismaClient } = require('@prisma/client');
   const prisma = new PrismaClient();
   
-  prisma.$queryRaw`SELECT 1`.then(() => {
-    console.log('✅ Database connection stable (Prisma)');
+  prisma.$connect().then(() => {
+    console.log('✅ Database connection stable');
     app.listen(PORT, () => {
       console.log(`Server running securely on port ${PORT}`);
     });
-
-    process.on('unhandledRejection', (err, promise) => {
-      console.log(`❌ Error: ${err.message}`);
-    });
   }).catch(err => {
-    console.error('❌ Database connection failed. Server not started.');
+    console.error('❌ Database connection failed during local start.');
     console.error(err);
   });
 }

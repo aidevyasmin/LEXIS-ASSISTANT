@@ -1,6 +1,8 @@
 {
   "name": "lexis-assistant-root",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "frontend",
     "frontend/backend"
