@@ -30,6 +30,26 @@ exports.register = async (req, res) => {
       },
     });
 
+    // If role is CLIENT, also create a Client profile to link them immediately
+    if (user.role === 'CLIENT') {
+      try {
+        await prisma.client.create({
+          data: {
+            userId: user.id,
+            fullName: user.fullName,
+            email: user.email,
+            phone: 'N/A', // Placeholder for now
+            caseType: 'OTHER', // Default
+            status: 'NEW',
+          }
+        });
+        console.log(`✅ Automatically created Client profile for: ${user.email}`);
+      } catch (clientErr) {
+        console.error('⚠️ Could not create linked Client profile:', clientErr.message);
+        // We don't fail registration if this fails, but it would lead to "No Profile Found"
+      }
+    }
+
     // Create JWT
     const secret = process.env.JWT_SECRET;
     if (!secret) {
