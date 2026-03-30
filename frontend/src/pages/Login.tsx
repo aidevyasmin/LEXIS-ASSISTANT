@@ -91,15 +91,16 @@ const Login = () => {
             </div>
           </div>
 
+          <div className="text-center mb-4">
+            <Link to="/register" className="text-sm text-slate-500 hover:text-legal-blue transition-colors">
+              New client? <span className="text-legal-blue font-bold border-b border-legal-blue">Register here</span>
+            </Link>
+          </div>
+
           <Button type="submit" className="w-full" isLoading={isLoading}>
             Sign In
           </Button>
-          
-          <div className="text-center mt-6 pt-6 border-t border-slate-100">
-            <Link to="/register" className="text-sm text-slate-500 hover:text-legal-blue transition-colors">
-              New client? <span className="text-legal-blue font-bold">Register here</span>
-            </Link>
-          </div>
+
         </form>
       </div>
     </div>
