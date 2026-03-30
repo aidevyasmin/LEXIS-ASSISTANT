@@ -7,20 +7,26 @@ exports.register = async (req, res) => {
   try {
     const { fullName, email, password, role } = req.body;
 
-    // Check if user already exists
+    // 1. Env Var Safety
+    if (!process.env.JWT_SECRET) {
+      console.error('❌ CRITICAL: JWT_SECRET is missing');
+      return res.status(500).json({ message: 'Server configuration error: Authentication secret is missing.' });
+    }
+
+    // 2. Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'An account with this email already exists.' });
     }
 
-    // Hash the password - using 10 rounds is standard and fast enough for serverless
+    // 3. Hash the password
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Create the user
+    // 4. Create the user
     const user = await prisma.user.create({
       data: {
         fullName,
@@ -30,55 +36,41 @@ exports.register = async (req, res) => {
       },
     });
 
-    // If role is CLIENT, also create a Client profile to link them immediately
-    if (user.role === 'CLIENT') {
-      try {
-        await prisma.client.create({
-          data: {
-            userId: user.id,
-            fullName: user.fullName,
-            email: user.email,
-            phone: 'N/A', // Placeholder for now
-            caseType: 'OTHER', // Default
-            status: 'NEW',
-          }
-        });
-        console.log(`✅ Automatically created Client profile for: ${user.email}`);
-      } catch (clientErr) {
-        console.error('⚠️ Could not create linked Client profile:', clientErr.message);
-        // We don't fail registration if this fails, but it would lead to "No Profile Found"
-      }
+    // 5. MANDATORY: Create Client Profile (Linked to User)
+    // This works for all users to ensure "No Profile Found" never occurs.
+    try {
+      await prisma.client.create({
+        data: {
+          userId: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          phone: 'Not Provided',
+          caseType: 'OTHER',
+          status: 'NEW',
+        }
+      });
+      console.log(`✅ Profile created for: ${user.email}`);
+    } catch (profileErr) {
+      console.error('⚠️ Profile creation failed during registration:', profileErr.message);
+      // We continue since the user is created, but login fallback will catch this.
     }
 
-    // Create JWT
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      console.error('❌ CRITICAL: JWT_SECRET is missing in environment variables');
-      return res.status(500).json({ message: 'Authentication configuration error (Missing JWT_SECRET)' });
-    }
-
+    // 6. Create JWT
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      secret,
+      process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
 
     res.status(201).json({
       token,
-      user: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-        role: user.role,
-      },
+      user: { id: user.id, fullName: user.fullName, email: user.email, role: user.role },
     });
   } catch (error) {
-    console.error('❌ Registration Error Detailed:', error);
-    // Return the specific error message to the frontend for debugging
+    console.error('❌ Registration Error:', error);
     res.status(500).json({ 
-      message: 'Registration failed on server', 
-      error: error.message,
-      code: error.code // Prisma error codes are useful
+      message: 'Registration failed due to a server error.', 
+      details: error.message 
     });
   }
 };
@@ -87,11 +79,9 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(`Attempting login for email: ${email}`);
 
-    if (!prisma) {
-      console.error('❌ Prisma client not initialized!');
-      return res.status(500).json({ message: 'Database connection error' });
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ message: 'Server configuration error: Authentication secret is missing.' });
     }
 
     const user = await prisma.user.findUnique({
@@ -99,42 +89,48 @@ exports.login = async (req, res) => {
     });
 
     if (!user) {
-      console.log(`❌ User not found: ${email}`);
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid email or password.' });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-
     if (!isMatch) {
-      console.log(`❌ Invalid password for: ${email}`);
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid email or password.' });
     }
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      console.error('❌ JWT_SECRET is missing in environment variables');
-      return res.status(500).json({ message: 'Authentication configuration error' });
+    // 7. FALLBACK SAFETY: Ensure Profile exists on Login
+    const existingProfile = await prisma.client.findFirst({ where: { userId: user.id } });
+    
+    if (!existingProfile) {
+      console.log(`🔄 Creating missing profile for existing user: ${user.email}`);
+      try {
+        await prisma.client.create({
+          data: {
+            userId: user.id,
+            fullName: user.fullName,
+            email: user.email,
+            phone: 'Not Provided',
+            caseType: 'OTHER',
+            status: 'NEW',
+          }
+        });
+      } catch (err) {
+        console.error('❌ Fallback profile creation failed:', err.message);
+      }
     }
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      secret,
+      process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
 
-    console.log(`✅ Login successful: ${email}`);
     res.status(200).json({
       token,
-      user: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-        role: user.role,
-      },
+      user: { id: user.id, fullName: user.fullName, email: user.email, role: user.role },
     });
   } catch (error) {
     console.error('❌ Login Error:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'Login failed due to a server error.' });
   }
 };
 

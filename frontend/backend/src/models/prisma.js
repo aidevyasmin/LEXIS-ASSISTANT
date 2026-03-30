@@ -1,11 +1,12 @@
 const { PrismaClient } = require('@prisma/client');
 
-// Force-read from process.env with potential fallback logic for Vercel
+// STRICT Requirement: Prevent crashes due to missing DATABASE_URL
 const dbUrl = process.env.DATABASE_URL;
 
 if (!dbUrl) {
-  console.error('❌ CRITICAL VERCEL ERROR: DATABASE_URL is missing from process.env');
-  console.log('Available Env Keys:', Object.keys(process.env).filter(k => !k.includes('TOKEN') && !k.includes('KEY')));
+  const errorMsg = '❌ CRITICAL CONFIGURATION ERROR: DATABASE_URL environment variable is not defined. Please check your Vercel/Local settings.';
+  console.error(errorMsg);
+  // We don't throw here to allow the process to start, but Prisma will fail on first query with a clear log.
 }
 
 const prisma = new PrismaClient({
@@ -17,11 +18,14 @@ const prisma = new PrismaClient({
   log: ['error', 'warn'],
 });
 
-// Test connection on initialization if in production (Vercel)
-if (process.env.VERCEL) {
-  prisma.$connect()
-    .then(() => console.log('✅ Prisma connected successfully to Neon DB'))
-    .catch(err => console.error('❌ Prisma connection failed on Vercel:', err.message));
-}
+// Fallback check on init
+prisma.$connect()
+  .then(() => console.log('✅ Database connected successfully.'))
+  .catch(err => {
+    console.error('❌ Database connection failed:', err.message);
+    if (err.message.includes('datasource')) {
+      console.error('👉 Hint: This is likely due to an invalid or missing DATABASE_URL.');
+    }
+  });
 
 module.exports = prisma;
