@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 
-// ✅ Get DATABASE_URL from environment
+// Direct access to environment variable is most reliable on Vercel
 const dbUrl = process.env.DATABASE_URL;
 
 if (!dbUrl) {
@@ -13,15 +13,8 @@ const prisma = new PrismaClient({
       url: dbUrl,
     },
   },
-  // Ensure we don't spam connections in serverless environments
-  log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
+  // Optimize for serverless: only log errors in production
+  log: ['error'],
 });
-
-// Test connection only once to avoid performance hits
-if (process.env.NODE_ENV !== 'production') {
-  prisma.$connect()
-    .then(() => console.log('✅ Connected to database successfully'))
-    .catch((err) => console.error('❌ Database connection error:', err));
-}
 
 module.exports = prisma;
